@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BeltPrep</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+	<% if current_user %>
+	<div class="pure-menu pure-menu-horizontal pure-menu-scrollable w3-sand">
+    <ul class="pure-menu-list w3-right">
+        <li class="pure-menu-item  w3-small">	
+        	<form class="w3-right w3-margin" action='/logout' method='post'>
+						<input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+						<input type='hidden' name='_method' value='delete'>
+						<input class="w3-btn w3-text-grey w3-sand w3-hover-blue-grey" type='submit' value='Log Out'>
+					</form>
+				</li>
+        <li class="pure-menu-item w3-border-left w3-small">
+          <a class="w3-right w3-btn w3-text-grey w3-sand w3-hover-blue-grey" href="/users/<%= current_user.id %>">Edit My Profile </a>
+        </li>
+        <li class="pure-menu-item w3-border-right w3-border-left w3-small">
+          <a class="w3-right w3-btn w3-text-grey w3-sand w3-hover-blue-grey" href="/events">Events Dashboard</a>
+        </li>
+    </ul>
+    <h2 class="w3-text-blue-grey w3-margin-left w3-text-shadow w3-margin-top">Welcome <%= @user.name %></h2>
+  </div>
+	<% end %>
+
+  <div class="w3-margin">
+    <%= yield %>
+    
+    <% if flash.key? :errors %>
+      <div class="w3-container w3-card-24 w3-third w3-margin-top w3-pale-red w3-display-middle">
+        <% flash[:errors].each do | e |%>
+          <h5 class="w3-opacity"><%= e %></h5>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  </body>
+</html>

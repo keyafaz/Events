@@ -1,0 +1,176 @@
+<div class="w3-margin">
+   <div class="w3-margin-bottom">
+      <h5>Here are some of the events in your state:</h5>
+      <table class="pure-table">
+          <thead>
+              <tr>
+                  <th>Name</th>
+                  <th>Date</th>
+                  <th>Location</th>
+                  <th>Host</th>
+                  <th>Action/status</th>
+              </tr>
+          </thead>
+
+          <tbody>
+          <% @events.each do | event | %>
+            <% if event.state == current_user.state %>
+              <tr>
+                  <td><a href="/events/<%= event.id %>"><%= event.name %></a></td>
+                  <td><%= event.date %></td>
+                  <td><%= event.user.city %></td>
+                  <td><%= event.user.name %></td>
+                  <td>
+                  <% if event.user.id == current_user.id %>
+                     <form class="w3-show-inline-block" action="/events/<%= event.id %>" method="post">
+                        <input type="hidden" name="_method" value="delete">
+                        <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+                        <input class="w3-btn w3-text-light-grey w3-blue-grey w3-hover-sand" type="submit" value="Delete">
+                     </form>
+                     <a class="w3-btn w3-text-light-grey w3-blue-grey w3-hover-sand" href="/events/<%= event.id %>/edit">Edit</a>
+                  <% end %>
+                  <% if event.user.id != current_user.id %>  
+                     <% if event.users_joined.any? {|e| current_user.id == e.id } %>
+                        <form action="/memberships/<%= event.id %>" method="post">
+                           <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+                           <input type="hidden" name="_method" value="delete">
+                           <input type="hidden" name="event_id" value="<%= event.id %>">
+                           <input class="w3-btn w3-text-light-grey w3-blue-grey w3-hover-sand" type="submit" value="Cancel">
+                        </form>
+                     <% else %>
+                        <form action="/memberships" method="post">
+                           <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+                           <input type="hidden" name="event_id" value="<%= event.id %>">
+                           <input class="w3-btn w3-text-light-grey w3-blue-grey w3-hover-sand" type="submit" value="Join">
+                        </form>
+                     <% end %>
+                  <% end %>
+                  </td>
+              </tr>
+            <% end %>
+          <% end %>
+          </tbody>
+      </table>
+   </div>
+<div class="w3-margin-bottom">
+   <h5>Here are some of the events in other states:</h5>
+      <table class="pure-table">
+          <thead>
+              <tr>
+                  <th>Name</th>
+                  <th>Date</th>
+                  <th>Location</th>
+                  <th>Host</th>
+                  <th>Action/status</th>
+              </tr>
+          </thead>
+          <tbody>
+
+          <% @events.each do | event | %>
+            <% if event.state != current_user.state %>
+              <tr>
+                  <td><a href="/events/<%= event.id %>"><%= event.name %></a></td>
+                  <td><%= event.date %></td>
+                  <td><%= event.state %></td>
+                  <td><%= event.user.name %></td>
+                  <td>
+                  <% if event.user.id == current_user.id %>
+                     <form class="w3-show-inline-block" action="/events/<%= event.id %>" method="post">
+                        <input type="hidden" name="_method" value="delete">
+                        <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+                        <input class="w3-btn w3-text-light-grey w3-blue-grey w3-hover-sand" type="submit" value="Delete">
+                     </form>
+                     <a class="w3-btn w3-text-light-grey w3-blue-grey w3-hover-sand" href="/events/<%= event.id %>/edit">Edit</a>
+                     <% end %>
+                     <% if event.user.id != current_user.id %>  
+                     <% if event.users_joined.any? {|e| current_user.id == e.id } %>
+                        <form action="/memberships/<%= event.id %>" method="post">
+                           <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+                           <input type="hidden" name="_method" value="delete">
+                           <input type="hidden" name="event_id" value="<%= event.id %>">
+                           <input class="w3-btn w3-text-light-grey w3-blue-grey w3-hover-sand" type="submit" value="Cancel">
+                        </form>
+                     <% else %>
+                        <form action="/memberships" method="post">
+                           <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+                           <input type="hidden" name="event_id" value="<%= event.id %>">
+                           <input class="w3-btn w3-text-light-grey w3-blue-grey w3-hover-sand" type="submit" value="Join">
+                        </form>
+                     <% end %>
+                  <% end %>
+                  </td>
+              </tr>
+            <% end %>
+          <% end %>
+          </tbody>
+      </table>
+
+   <div class="w3-container w3-blue-grey w3-margin-top w3-text-black">
+      <h4 class="w3-text-white">Add Event</h4>
+      <form class="pure-form" action="/events" method="post">
+        <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+          <fieldset>
+               <label for="name" class="w3-text-white">Name:  </label>
+                  <input type="text" name="name">
+               <label for="date" class="w3-text-white">Date: </label> 
+                  <input type="date" name="date">
+               <label for="state" class="w3-text-white">Location: </label> 
+                  <select name="state" name="state"  >
+                    <option value="AL">AL</option>
+                    <option value="AK">AK</option>
+                    <option value="AZ">AZ</option>
+                    <option value="AR">AR</option>
+                    <option value="CA">CA</option>
+                    <option value="CO">CO</option>
+                    <option value="CT">CT</option>
+                    <option value="DE">DE</option>
+                    <option value="DC">DC</option>
+                    <option value="FL">FL</option>
+                    <option value="GA">GA</option>
+                    <option value="HI">HI</option>
+                    <option value="ID">ID</option>
+                    <option value="IL">IL</option>
+                    <option value="IN">IN</option>
+                    <option value="IA">IA</option>
+                    <option value="KS">KS</option>
+                    <option value="KY">KY</option>
+                    <option value="LA">LA</option>
+                    <option value="ME">ME</option>
+                    <option value="MD">MD</option>
+                    <option value="MA">MA</option>
+                    <option value="MI">MI</option>
+                    <option value="MN">MN</option>
+                    <option value="MS">MS</option>
+                    <option value="MO">MO</option>
+                    <option value="MT">MT</option>
+                    <option value="NE">NE</option>
+                    <option value="NV">NV</option>
+                    <option value="NH">NH</option>
+                    <option value="NJ">NJ</option>
+                    <option value="NM">NM</option>
+                    <option value="NY">NY</option>
+                    <option value="NC">NC</option>
+                    <option value="ND">ND</option>
+                    <option value="OH">OH</option>
+                    <option value="OK">OK</option>
+                    <option value="OR">OR</option>
+                    <option value="PA">PA</option>
+                    <option value="RI">RI</option>
+                    <option value="SC">SC</option>
+                    <option value="SD">SD</option>
+                    <option value="TN">TN</option>
+                    <option value="TX">TX</option>
+                    <option value="UT">UT</option>
+                    <option value="VT">VT</option>
+                    <option value="VA">VA</option>
+                    <option value="WA">WA</option>
+                    <option value="WV">WV</option>
+                    <option value="WI">WI</option>
+                    <option value="WY">WY</option>
+                  </select>
+              <input type="submit" value="Add event" class="w3-btn w3-text-grey w3-sand w3-hover">
+          </fieldset>
+      </form>
+   </div>
+</div>
+</div>
